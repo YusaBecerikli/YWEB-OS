@@ -70,9 +70,13 @@ function openApp(appId) {
 
   const header = document.createElement('div');
   header.className = 'window-header';
-  header.innerHTML = `
-    <div class="window-title">${app.icon || ''} ${app.name}</div>
-  `;
+
+  const title = document.createElement('div');
+  title.className = 'window-title';
+  title.textContent = `${app.icon || ''} ${app.name}`;
+
+  const controls = document.createElement('div');
+  controls.className = 'window-controls';
 
   const fullscreenButton = document.createElement('button');
   fullscreenButton.className = 'window-fullscreen';
@@ -85,8 +89,10 @@ function openApp(appId) {
   closeButton.textContent = '✕';
   closeButton.addEventListener('click', () => closeApp(app.id));
 
-  header.appendChild(fullscreenButton);
-  header.appendChild(closeButton);
+  controls.appendChild(fullscreenButton);
+  controls.appendChild(closeButton);
+  header.appendChild(title);
+  header.appendChild(controls);
 
   const content = document.createElement('div');
   content.className = 'window-content';

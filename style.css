@@ -134,6 +134,23 @@ body {
   cursor: grabbing;
 }
 
+.window-title {
+  font-weight: 700;
+  font-size: 0.98rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
 .window-fullscreen,
 .window-close {
   width: 28px;
@@ -143,7 +160,6 @@ body {
   background: rgba(255, 255, 255, 0.16);
   color: white;
   cursor: pointer;
-  margin-left: 8px;
 }
 
 .window-resizer {
