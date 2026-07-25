@@ -423,22 +423,42 @@ registerApp({
         <button class="searchButton" type="button" aria-label="Search">🔎</button>
       </div>
       <div class="search-results"></div>
+      <div class="search-frame-wrapper hidden">
+        <div class="search-frame-header">
+          <div class="search-frame-title">RealWebEngine Preview</div>
+          <button class="search-frame-close" type="button" aria-label="Close preview">✕</button>
+        </div>
+        <iframe class="search-frame" src="about:blank"></iframe>
+      </div>
     `;
 
     const input = container.querySelector('.searchInput');
     const button = container.querySelector('.searchButton');
     const results = container.querySelector('.search-results');
+    const frameWrapper = container.querySelector('.search-frame-wrapper');
+    const frame = container.querySelector('.search-frame');
+    const frameClose = container.querySelector('.search-frame-close');
+
+    function openInFrame(url) {
+      frame.src = url;
+      frameWrapper.classList.remove('hidden');
+    }
+
+    frameClose.addEventListener('click', () => {
+      frameWrapper.classList.add('hidden');
+      frame.src = 'about:blank';
+    });
 
     function createResultCard(title, description, url) {
-      const card = document.createElement('div');
+      const card = document.createElement('button');
+      card.type = 'button';
       card.className = 'search-result-card';
       card.innerHTML = `
-        <a href="${url}" target="_blank" rel="noopener noreferrer">
-          <div class="search-result-title">${title}</div>
-          <div class="search-result-description">${description}</div>
-          <div class="search-result-url">${url}</div>
-        </a>
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-description">${description}</div>
+        <div class="search-result-url">${url}</div>
       `;
+      card.addEventListener('click', () => openInFrame(url));
       return card;
     }
 
@@ -453,17 +473,17 @@ registerApp({
       const cards = [
         createResultCard(
           `Search ${query} on Google`,
-          'Open a Google search in a new tab.',
+          'Open a preview of the Google search results inside RealWebEngine.',
           `https://www.google.com/search?q=${encoded}`
         ),
         createResultCard(
           `Search ${query} on DuckDuckGo`,
-          'Open a privacy-friendly search.',
+          'Open a preview of the DuckDuckGo search results inside RealWebEngine.',
           `https://duckduckgo.com/?q=${encoded}`
         ),
         createResultCard(
           `Search ${query} on Bing`,
-          'Open a Bing search in a new tab.',
+          'Open a preview of the Bing search results inside RealWebEngine.',
           `https://www.bing.com/search?q=${encoded}`
         )
       ];
