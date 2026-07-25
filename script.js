@@ -41,7 +41,12 @@ backgroundButtons.forEach((button) => {
   button.addEventListener('click', () => {
     document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
     document.body.classList.add('theme-default');
-    desktopElement.style.background = getBackgroundValue(button.dataset.background);
+    const backgroundValue = button.dataset.background;
+    if (backgroundValue.startsWith('backgrounds/')) {
+      desktopElement.style.background = `url(${backgroundValue}) center/cover no-repeat`;
+    } else {
+      desktopElement.style.background = getBackgroundValue(backgroundValue);
+    }
   });
 });
 
@@ -85,6 +90,9 @@ function getThemeBackground(theme) {
 }
 
 function getBackgroundValue(name) {
+  if (name.startsWith('backgrounds/')) {
+    return `url(${name}) center/cover no-repeat`;
+  }
   switch (name) {
     case 'sunset':
       return 'linear-gradient(145deg, #ff9a56 0%, #f43f5e 45%, #7c3aed 100%)';
