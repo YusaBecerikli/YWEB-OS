@@ -88,10 +88,43 @@ function openApp(appId) {
   windowElement.appendChild(content);
 
   windowContainer.appendChild(windowElement);
+  makeWindowDraggable(windowElement, header);
   bringToFront(windowElement);
 
   app.render(content);
   openWindows[app.id] = { element: windowElement, taskbarButton: createTaskbarButton(app) };
+}
+
+function makeWindowDraggable(windowElement, handle) {
+  handle.addEventListener('mousedown', (event) => {
+    if (event.button !== 0) return;
+
+    const rect = windowElement.getBoundingClientRect();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startLeft = rect.left;
+    const startTop = rect.top;
+
+    windowElement.classList.add('dragging');
+    bringToFront(windowElement);
+
+    function onMouseMove(moveEvent) {
+      const deltaX = moveEvent.clientX - startX;
+      const deltaY = moveEvent.clientY - startY;
+      windowElement.style.left = `${startLeft + deltaX}px`;
+      windowElement.style.top = `${startTop + deltaY}px`;
+    }
+
+    function onMouseUp() {
+      windowElement.classList.remove('dragging');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    event.preventDefault();
+  });
 }
 
 function closeApp(appId) {

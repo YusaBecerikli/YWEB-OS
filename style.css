@@ -122,6 +122,12 @@ body {
   padding: 14px 16px;
   background: #3b4d72;
   color: white;
+  cursor: grab;
+  user-select: none;
+}
+
+.window-header.dragging {
+  cursor: grabbing;
 }
 
 .window-title {
