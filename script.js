@@ -419,10 +419,9 @@ registerApp({
   render(container) {
     container.innerHTML = `
       <div class="searchBox">
-        <input class="searchInput" type="text" placeholder="Search something" aria-label="Search query" />
+        <input class="searchInput" type="text" placeholder="Search DuckDuckGo" aria-label="Search query" />
         <button class="searchButton" type="button" aria-label="Search">🔎</button>
       </div>
-      <div class="search-results"></div>
       <div class="search-frame-wrapper hidden">
         <div class="search-frame-header">
           <div class="search-frame-title">RealWebEngine Preview</div>
@@ -434,13 +433,14 @@ registerApp({
 
     const input = container.querySelector('.searchInput');
     const button = container.querySelector('.searchButton');
-    const results = container.querySelector('.search-results');
     const frameWrapper = container.querySelector('.search-frame-wrapper');
     const frame = container.querySelector('.search-frame');
     const frameClose = container.querySelector('.search-frame-close');
+    const frameTitle = container.querySelector('.search-frame-title');
 
-    function openInFrame(url) {
+    function openInFrame(url, query) {
       frame.src = url;
+      frameTitle.textContent = query ? `RealWebEngine: ${query}` : 'RealWebEngine Preview';
       frameWrapper.classList.remove('hidden');
     }
 
@@ -449,55 +449,14 @@ registerApp({
       frame.src = 'about:blank';
     });
 
-    function createResultCard(title, description, url) {
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'search-result-card';
-      card.innerHTML = `
-        <div class="search-result-title">${title}</div>
-        <div class="search-result-description">${description}</div>
-        <div class="search-result-url">${url}</div>
-      `;
-      card.addEventListener('click', () => openInFrame(url));
-      return card;
-    }
-
-    function renderResults(query) {
-      const encoded = encodeURIComponent(query);
-      results.innerHTML = '';
-      const heading = document.createElement('div');
-      heading.className = 'search-result-heading';
-      heading.textContent = `Showing results for "${query}"`;
-      results.appendChild(heading);
-
-      const cards = [
-        createResultCard(
-          `Search ${query} on Google`,
-          'Open a preview of the Google search results inside RealWebEngine.',
-          `https://www.google.com/search?q=${encoded}`
-        ),
-        createResultCard(
-          `Search ${query} on DuckDuckGo`,
-          'Open a preview of the DuckDuckGo search results inside RealWebEngine.',
-          `https://duckduckgo.com/?q=${encoded}`
-        ),
-        createResultCard(
-          `Search ${query} on Bing`,
-          'Open a preview of the Bing search results inside RealWebEngine.',
-          `https://www.bing.com/search?q=${encoded}`
-        )
-      ];
-
-      cards.forEach((card) => results.appendChild(card));
-    }
-
     function handleSearch() {
       const query = input.value.trim();
       if (!query) {
-        results.innerHTML = '<div class="search-warning">Please enter a search term.</div>';
         return;
       }
-      renderResults(query);
+      const encoded = encodeURIComponent(query);
+      const url = `https://duckduckgo.com/?q=${encoded}`;
+      openInFrame(url, query);
     }
 
     button.addEventListener('click', handleSearch);

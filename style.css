@@ -681,8 +681,10 @@ textarea {
   margin-top: 20px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background: rgba(5, 9, 18, 0.95);
+  max-height: 72vh;
 }
 
 .search-frame-wrapper.hidden {
@@ -716,6 +718,7 @@ textarea {
 
 .search-frame {
   width: 100%;
+  flex: 1 1 auto;
   min-height: 360px;
   border: none;
   background: #09101b;
