@@ -419,10 +419,9 @@ registerApp({
   render(container) {
     container.innerHTML = `
       <div class="searchBox">
-        <input class="searchInput" type="text" placeholder="Search DuckDuckGo" aria-label="Search query" />
+        <input class="searchInput" type="text" placeholder="Search RealWebEngine" aria-label="Search query" />
         <button class="searchButton" type="button" aria-label="Search">🔎</button>
       </div>
-      <div class="search-summary">RealWebEngine isteredim: doğru sonuç verir ama yine de amatör :)</div>
       <div class="search-results"></div>
       <div class="search-preview hidden">
         <div class="preview-header">
@@ -442,19 +441,29 @@ registerApp({
 
     const resultTemplates = [
       {
-        title: 'DuckDuckGo sonuçları',
-        description: 'Doğrudan DuckDuckGo sorgusu için hazırlanan amatör sonuçlar.',
-        source: 'https://duckduckgo.com'
+        title: 'DuckDuckGo',
+        description: 'Aradığınız bilgilere gizlilik dostu bir şekilde yaklaşır.',
+        domain: 'duckduckgo.com'
       },
       {
-        title: 'Web sonuç başlığı',
-        description: 'Bu sonuç sayfa, arama sonuçlarını benzer şekilde gösterir.',
-        source: 'https://example.com'
+        title: 'Wikipedia',
+        description: 'Popüler bilgi ve hızlı özetler için simüle edilmiş sonuç.',
+        domain: 'wikipedia.org'
       },
       {
-        title: 'Kaynak bağlantısı',
-        description: 'Gerçek bağlantıya yönlendirmeden önce önizleme sunar.',
-        source: 'https://example.com/info'
+        title: 'StackOverflow',
+        description: 'Geliştirici soruları ve kod çözümleri için öneri.',
+        domain: 'stackoverflow.com'
+      },
+      {
+        title: 'Medium',
+        description: 'Konu başlıkları ve makale önerileri sunar.',
+        domain: 'medium.com'
+      },
+      {
+        title: 'Developer Blog',
+        description: 'Teknik anlatımlar ve örnek kod parçacıkları.',
+        domain: 'dev.example'
       }
     ];
 
@@ -463,19 +472,21 @@ registerApp({
       card.type = 'button';
       card.className = 'search-result-card';
       const result = resultTemplates[index % resultTemplates.length];
+      const fakeUrl = `https://${result.domain}/search?q=${encodeURIComponent(query)}`;
+
       card.innerHTML = `
         <div class="search-result-title">${result.title} — ${query}</div>
         <div class="search-result-description">${result.description}</div>
-        <div class="search-result-url">${result.source}/?q=${encodeURIComponent(query)}</div>
+        <div class="search-result-url">${fakeUrl}</div>
       `;
       card.addEventListener('click', () => {
         previewBody.innerHTML = `
           <p><strong>Aranan:</strong> ${query}</p>
-          <p><strong>Site:</strong> ${result.source}</p>
-          <p>Bu amatör önizleme, sonucu görüntülemenin en çılgın yolu.</p>
+          <p><strong>Site:</strong> ${result.domain}</p>
+          <p><strong>Özet:</strong> "${query}" hakkında aramalarınız için uygun bazı bölümler bulundu.</p>
           <div class="preview-fake-content">
-            <p>"${query}" için en uygun sonuç burada gibi görünüyor.</p>
-            <p>Gerçek arama motoru içeriği yerine bu sayfa, YWEB-OS tarafından sunulan bir simülasyondur.</p>
+            <p><strong>Önerilen başlık:</strong> ${query} ile ilgili temel bilgiler ve örnekler.</p>
+            <p>İlgili sonuç, aradığınız konuya yönelik kısa bir özet sunar.</p>
           </div>
         `;
         preview.classList.remove('hidden');
