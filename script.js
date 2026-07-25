@@ -228,6 +228,17 @@ registerApp({
   }
 });
 
+
+
+registerApp({
+    id: 'RealWebEngine',
+    name: 'RealWebEngine',
+    icon: '⭐',
+    render(container) {
+        container.innerHTML = '<p>Test</p>';
+  }
+});
+
 // Yeni uygulama eklemek için bu örneği kullanabilirsiniz:
 // registerApp({
 //   id: 'yeniUygulama',
