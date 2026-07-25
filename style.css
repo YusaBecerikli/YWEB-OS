@@ -115,6 +115,10 @@ body {
   overflow: hidden;
 }
 
+.window.fullscreen {
+  border-radius: 14px;
+}
+
 .window-header {
   display: flex;
   align-items: center;
@@ -128,6 +132,89 @@ body {
 
 .window-header.dragging {
   cursor: grabbing;
+}
+
+.window-fullscreen,
+.window-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.window-resizer {
+  position: absolute;
+  background: transparent;
+}
+
+.window-resizer-n,
+.window-resizer-s {
+  height: 10px;
+  left: 0;
+  right: 0;
+  cursor: ns-resize;
+}
+
+.window-resizer-e,
+.window-resizer-w {
+  width: 10px;
+  top: 0;
+  bottom: 0;
+  cursor: ew-resize;
+}
+
+.window-resizer-ne,
+.window-resizer-sw {
+  width: 14px;
+  height: 14px;
+  cursor: nesw-resize;
+}
+
+.window-resizer-nw,
+.window-resizer-se {
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+}
+
+.window-resizer-n {
+  top: -5px;
+}
+
+.window-resizer-s {
+  bottom: -5px;
+}
+
+.window-resizer-e {
+  right: -5px;
+}
+
+.window-resizer-w {
+  left: -5px;
+}
+
+.window-resizer-ne {
+  right: -5px;
+  top: -5px;
+}
+
+.window-resizer-se {
+  right: -5px;
+  bottom: -5px;
+}
+
+.window-resizer-nw {
+  left: -5px;
+  top: -5px;
+}
+
+.window-resizer-sw {
+  left: -5px;
+  bottom: -5px;
 }
 
 .window-title {

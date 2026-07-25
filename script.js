@@ -74,11 +74,18 @@ function openApp(appId) {
     <div class="window-title">${app.icon || ''} ${app.name}</div>
   `;
 
+  const fullscreenButton = document.createElement('button');
+  fullscreenButton.className = 'window-fullscreen';
+  fullscreenButton.textContent = '⛶';
+  fullscreenButton.title = 'Tam ekran';
+  fullscreenButton.addEventListener('click', () => toggleFullscreen(windowElement));
+
   const closeButton = document.createElement('button');
   closeButton.className = 'window-close';
   closeButton.textContent = '✕';
   closeButton.addEventListener('click', () => closeApp(app.id));
 
+  header.appendChild(fullscreenButton);
   header.appendChild(closeButton);
 
   const content = document.createElement('div');
@@ -87,12 +94,102 @@ function openApp(appId) {
   windowElement.appendChild(header);
   windowElement.appendChild(content);
 
+  addResizeHandles(windowElement);
   windowContainer.appendChild(windowElement);
   makeWindowDraggable(windowElement, header);
   bringToFront(windowElement);
 
   app.render(content);
   openWindows[app.id] = { element: windowElement, taskbarButton: createTaskbarButton(app) };
+}
+
+function addResizeHandles(windowElement) {
+  const directions = ['n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw'];
+  directions.forEach((direction) => {
+    const handle = document.createElement('div');
+    handle.className = `window-resizer window-resizer-${direction}`;
+    handle.dataset.direction = direction;
+    windowElement.appendChild(handle);
+    handle.addEventListener('mousedown', (event) => startResize(event, windowElement, direction));
+  });
+}
+
+function startResize(event, windowElement, direction) {
+  event.stopPropagation();
+  if (event.button !== 0) return;
+
+  const rect = windowElement.getBoundingClientRect();
+  const startX = event.clientX;
+  const startY = event.clientY;
+  const startWidth = rect.width;
+  const startHeight = rect.height;
+  const startLeft = rect.left;
+  const startTop = rect.top;
+
+  const minWidth = 240;
+  const minHeight = 200;
+
+  function onMouseMove(moveEvent) {
+    let newWidth = startWidth;
+    let newHeight = startHeight;
+    let newLeft = startLeft;
+    let newTop = startTop;
+    const dx = moveEvent.clientX - startX;
+    const dy = moveEvent.clientY - startY;
+
+    if (direction.includes('e')) {
+      newWidth = Math.max(minWidth, startWidth + dx);
+    }
+    if (direction.includes('s')) {
+      newHeight = Math.max(minHeight, startHeight + dy);
+    }
+    if (direction.includes('w')) {
+      newWidth = Math.max(minWidth, startWidth - dx);
+      newLeft = startLeft + dx;
+    }
+    if (direction.includes('n')) {
+      newHeight = Math.max(minHeight, startHeight - dy);
+      newTop = startTop + dy;
+    }
+
+    windowElement.style.width = `${newWidth}px`;
+    windowElement.style.height = `${newHeight}px`;
+    windowElement.style.left = `${newLeft}px`;
+    windowElement.style.top = `${newTop}px`;
+  }
+
+  function onMouseUp() {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  event.preventDefault();
+}
+
+function toggleFullscreen(windowElement) {
+  const isFullscreen = windowElement.dataset.fullscreen === 'true';
+  if (isFullscreen) {
+    windowElement.dataset.fullscreen = 'false';
+    windowElement.style.left = windowElement.dataset.prevLeft || '70px';
+    windowElement.style.top = windowElement.dataset.prevTop || '70px';
+    windowElement.style.width = windowElement.dataset.prevWidth || '360px';
+    windowElement.style.height = windowElement.dataset.prevHeight || '260px';
+    windowElement.classList.remove('fullscreen');
+  } else {
+    const rect = windowElement.getBoundingClientRect();
+    windowElement.dataset.prevLeft = `${rect.left}px`;
+    windowElement.dataset.prevTop = `${rect.top}px`;
+    windowElement.dataset.prevWidth = `${rect.width}px`;
+    windowElement.dataset.prevHeight = `${rect.height}px`;
+    windowElement.dataset.fullscreen = 'true';
+    windowElement.style.left = '10px';
+    windowElement.style.top = '10px';
+    windowElement.style.width = 'calc(100% - 20px)';
+    windowElement.style.height = 'calc(100vh - 82px)';
+    windowElement.classList.add('fullscreen');
+  }
 }
 
 function makeWindowDraggable(windowElement, handle) {
