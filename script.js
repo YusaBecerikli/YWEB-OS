@@ -422,42 +422,88 @@ registerApp({
         <input class="searchInput" type="text" placeholder="Search DuckDuckGo" aria-label="Search query" />
         <button class="searchButton" type="button" aria-label="Search">🔎</button>
       </div>
-      <div class="search-frame-wrapper hidden">
-        <div class="search-frame-header">
-          <div class="search-frame-title">RealWebEngine Preview</div>
-          <button class="search-frame-close" type="button" aria-label="Close preview">✕</button>
+      <div class="search-summary">RealWebEngine isteredim: doğru sonuç verir ama yine de amatör :)</div>
+      <div class="search-results"></div>
+      <div class="search-preview hidden">
+        <div class="preview-header">
+          <span class="preview-title">Sonuç Önizlemesi</span>
+          <button class="preview-close" type="button" aria-label="Close preview">Kapat</button>
         </div>
-        <iframe class="search-frame" src="about:blank"></iframe>
+        <div class="preview-body"></div>
       </div>
     `;
 
     const input = container.querySelector('.searchInput');
     const button = container.querySelector('.searchButton');
-    const frameWrapper = container.querySelector('.search-frame-wrapper');
-    const frame = container.querySelector('.search-frame');
-    const frameClose = container.querySelector('.search-frame-close');
-    const frameTitle = container.querySelector('.search-frame-title');
+    const results = container.querySelector('.search-results');
+    const preview = container.querySelector('.search-preview');
+    const previewBody = container.querySelector('.preview-body');
+    const previewClose = container.querySelector('.preview-close');
 
-    function openInFrame(url, query) {
-      frame.src = url;
-      frameTitle.textContent = query ? `RealWebEngine: ${query}` : 'RealWebEngine Preview';
-      frameWrapper.classList.remove('hidden');
+    const resultTemplates = [
+      {
+        title: 'DuckDuckGo sonuçları',
+        description: 'Doğrudan DuckDuckGo sorgusu için hazırlanan amatör sonuçlar.',
+        source: 'https://duckduckgo.com'
+      },
+      {
+        title: 'Web sonuç başlığı',
+        description: 'Bu sonuç sayfa, arama sonuçlarını benzer şekilde gösterir.',
+        source: 'https://example.com'
+      },
+      {
+        title: 'Kaynak bağlantısı',
+        description: 'Gerçek bağlantıya yönlendirmeden önce önizleme sunar.',
+        source: 'https://example.com/info'
+      }
+    ];
+
+    function createResultCard(query, index) {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'search-result-card';
+      const result = resultTemplates[index % resultTemplates.length];
+      card.innerHTML = `
+        <div class="search-result-title">${result.title} — ${query}</div>
+        <div class="search-result-description">${result.description}</div>
+        <div class="search-result-url">${result.source}/?q=${encodeURIComponent(query)}</div>
+      `;
+      card.addEventListener('click', () => {
+        previewBody.innerHTML = `
+          <p><strong>Aranan:</strong> ${query}</p>
+          <p><strong>Site:</strong> ${result.source}</p>
+          <p>Bu amatör önizleme, sonucu görüntülemenin en çılgın yolu.</p>
+          <div class="preview-fake-content">
+            <p>"${query}" için en uygun sonuç burada gibi görünüyor.</p>
+            <p>Gerçek arama motoru içeriği yerine bu sayfa, YWEB-OS tarafından sunulan bir simülasyondur.</p>
+          </div>
+        `;
+        preview.classList.remove('hidden');
+      });
+      return card;
     }
 
-    frameClose.addEventListener('click', () => {
-      frameWrapper.classList.add('hidden');
-      frame.src = 'about:blank';
-    });
+    function renderResults(query) {
+      results.innerHTML = '';
+      for (let i = 0; i < 5; i += 1) {
+        results.appendChild(createResultCard(query, i));
+      }
+      preview.classList.add('hidden');
+    }
 
     function handleSearch() {
       const query = input.value.trim();
       if (!query) {
+        results.innerHTML = '<div class="search-warning">Lütfen arama kelimesi girin.</div>';
+        preview.classList.add('hidden');
         return;
       }
-      const encoded = encodeURIComponent(query);
-      const url = `https://duckduckgo.com/?q=${encoded}`;
-      openInFrame(url, query);
+      renderResults(query);
     }
+
+    previewClose.addEventListener('click', () => {
+      preview.classList.add('hidden');
+    });
 
     button.addEventListener('click', handleSearch);
     input.addEventListener('keydown', (event) => {
