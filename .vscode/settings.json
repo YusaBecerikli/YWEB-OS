@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /workspaces/YWEB-OS && node --check script\\.js && grep -n \"search-results\\\\\\|search-result-card\\\\\\|search-result-heading\\\\\\|search-warning\" style\\.css$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

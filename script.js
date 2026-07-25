@@ -349,7 +349,6 @@ registerApp({
   icon: '📝',
   render(container) {
     container.innerHTML = `
-      <p>This area is ready for taking notes. You can display application content here.</p>
       <textarea placeholder="Write your notes here..."></textarea>
     `;
   }
@@ -414,11 +413,79 @@ registerApp({
 
 
 registerApp({
-    id: 'RealWebEngine',
-    name: 'RealWebEngine',
-    icon: '⭐',
-    render(container) {
-        container.innerHTML = ' <div class="searchBox"><input class="searchInput" type="text" name="" placeholder="Search something"><button class="searchButton" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none"><g clip-path="url(#clip0_2_17)"><g filter="url(#filter0_d_2_17)"><path d="M23.7953 23.9182L19.0585 19.1814M19.0585 19.1814C19.8188 18.4211 20.4219 17.5185 20.8333 16.5251C21.2448 15.5318 21.4566 14.4671 21.4566 13.3919C21.4566 12.3167 21.2448 11.252 20.8333 10.2587C20.4219 9.2653 19.8188 8.36271 19.0585 7.60242C18.2982 6.84214 17.3956 6.23905 16.4022 5.82759C15.4089 5.41612 14.3442 5.20435 13.269 5.20435C12.1938 5.20435 11.1291 5.41612 10.1358 5.82759C9.1424 6.23905 8.23981 6.84214 7.47953 7.60242C5.94407 9.13789 5.08145 11.2204 5.08145 13.3919C5.08145 15.5634 5.94407 17.6459 7.47953 19.1814C9.01499 20.7168 11.0975 21.5794 13.269 21.5794C15.4405 21.5794 17.523 20.7168 19.0585 19.1814Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges"></path></g></g><defs><filter id="filter0_d_2_17" x="-0.418549" y="3.70435" width="29.7139" height="29.7139" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix><feOffset dy="4"></feOffset><feGaussianBlur stdDeviation="2"></feGaussianBlur><feComposite in2="hardAlpha" operator="out"></feComposite><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"></feColorMatrix><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_17"></feBlend><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_17" result="shape"></feBlend></filter><clipPath id="clip0_2_17"><rect width="28.0702" height="28.0702" fill="white" transform="translate(0.403503 0.526367)"></rect></clipPath></defs></svg></button></div>';
+  id: 'RealWebEngine',
+  name: 'RealWebEngine',
+  icon: '⭐',
+  render(container) {
+    container.innerHTML = `
+      <div class="searchBox">
+        <input class="searchInput" type="text" placeholder="Search something" aria-label="Search query" />
+        <button class="searchButton" type="button" aria-label="Search">🔎</button>
+      </div>
+      <div class="search-results"></div>
+    `;
+
+    const input = container.querySelector('.searchInput');
+    const button = container.querySelector('.searchButton');
+    const results = container.querySelector('.search-results');
+
+    function createResultCard(title, description, url) {
+      const card = document.createElement('div');
+      card.className = 'search-result-card';
+      card.innerHTML = `
+        <a href="${url}" target="_blank" rel="noopener noreferrer">
+          <div class="search-result-title">${title}</div>
+          <div class="search-result-description">${description}</div>
+          <div class="search-result-url">${url}</div>
+        </a>
+      `;
+      return card;
+    }
+
+    function renderResults(query) {
+      const encoded = encodeURIComponent(query);
+      results.innerHTML = '';
+      const heading = document.createElement('div');
+      heading.className = 'search-result-heading';
+      heading.textContent = `Showing results for "${query}"`;
+      results.appendChild(heading);
+
+      const cards = [
+        createResultCard(
+          `Search ${query} on Google`,
+          'Open a Google search in a new tab.',
+          `https://www.google.com/search?q=${encoded}`
+        ),
+        createResultCard(
+          `Search ${query} on DuckDuckGo`,
+          'Open a privacy-friendly search.',
+          `https://duckduckgo.com/?q=${encoded}`
+        ),
+        createResultCard(
+          `Search ${query} on Bing`,
+          'Open a Bing search in a new tab.',
+          `https://www.bing.com/search?q=${encoded}`
+        )
+      ];
+
+      cards.forEach((card) => results.appendChild(card));
+    }
+
+    function handleSearch() {
+      const query = input.value.trim();
+      if (!query) {
+        results.innerHTML = '<div class="search-warning">Please enter a search term.</div>';
+        return;
+      }
+      renderResults(query);
+    }
+
+    button.addEventListener('click', handleSearch);
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        handleSearch();
+      }
+    });
   }
 });
 
