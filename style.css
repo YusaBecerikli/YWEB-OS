@@ -23,7 +23,9 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: Inter, system-ui, sans-serif;
-  background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
+  background-image: url("photo.jpg");
+  background-size: cover;
+  background-position: center;
   color: var(--text);
 }
 
@@ -84,11 +86,60 @@ body {
   background: rgba(79, 97, 150, 0.96);
 }
 
+.background-options,
 .theme-options {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+}
+
+.background-button,
+.theme-button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(59, 77, 114, 0.92);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.background-button:hover,
+.theme-button:hover {
+  transform: translateY(-1px);
+  background: rgba(79, 97, 150, 0.96);
+}
+
+.background-button[data-background="sunset"] {
+  background: #fb7185;
+}
+
+.background-button[data-background="ocean"] {
+  background: #3b82f6;
+}
+
+.background-button[data-background="forest"] {
+  background: #16a34a;
+}
+
+.custom-background {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 240px;
+}
+
+.custom-background-label {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+#customBackgroundInput {
+  border-radius: 14px;
+  padding: 10px;
+  border: 1px solid rgba(16, 24, 38, 0.12);
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .theme-button {

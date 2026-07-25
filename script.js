@@ -9,8 +9,12 @@ const settingsButton = document.getElementById('settingsButton');
 const settingsModal = document.getElementById('settingsModal');
 const settingsClose = document.getElementById('settingsClose');
 const themeButtons = document.querySelectorAll('.theme-button');
+const backgroundButtons = document.querySelectorAll('.background-button');
+const customBackgroundInput = document.getElementById('customBackgroundInput');
+const desktopElement = document.getElementById('desktop');
 
 document.body.classList.add('theme-default');
+desktopElement.style.background = getThemeBackground('default');
 
 startButton.addEventListener('click', (event) => {
   event.stopPropagation();
@@ -29,7 +33,23 @@ themeButtons.forEach((button) => {
   button.addEventListener('click', () => {
     document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
     document.body.classList.add(`theme-${button.dataset.theme}`);
+    desktopElement.style.background = getThemeBackground(button.dataset.theme);
   });
+});
+
+backgroundButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
+    document.body.classList.add('theme-default');
+    desktopElement.style.background = getBackgroundValue(button.dataset.background);
+  });
+});
+
+customBackgroundInput.addEventListener('change', (event) => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  desktopElement.style.background = `url(${url}) center/cover no-repeat`;
 });
 
 document.addEventListener('click', (event) => {
@@ -49,6 +69,32 @@ function toggleStartMenu() {
 
 function hideStartMenu() {
   startMenu.classList.add('hidden');
+}
+
+function getThemeBackground(theme) {
+  switch (theme) {
+    case 'cobalt':
+      return 'linear-gradient(145deg, #0f172a 0%, #1e293b 45%, #0f172a 100%)';
+    case 'sunset':
+      return 'linear-gradient(145deg, #ff7a18 0%, #af1172 45%, #3a1c71 100%)';
+    case 'forest':
+      return 'linear-gradient(145deg, #0b3d2e 0%, #14532d 45%, #134e4a 100%)';
+    default:
+      return 'linear-gradient(145deg, #1b2735 0%, #19212b 45%, #1f3044 100%)';
+  }
+}
+
+function getBackgroundValue(name) {
+  switch (name) {
+    case 'sunset':
+      return 'linear-gradient(145deg, #ff9a56 0%, #f43f5e 45%, #7c3aed 100%)';
+    case 'ocean':
+      return 'linear-gradient(145deg, #219ebc 0%, #023047 45%, #8ecae6 100%)';
+    case 'forest':
+      return 'linear-gradient(145deg, #1f3f2f 0%, #2d6a4f 45%, #95d5b2 100%)';
+    default:
+      return getThemeBackground('default');
+  }
 }
 
 function registerApp(app) {

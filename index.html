@@ -25,16 +25,31 @@
     <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
       <div class="modal-panel">
         <div class="modal-header">
-          <h2 id="settingsTitle">Ayarlar</h2>
+          <h2 id="settingsTitle">Settings</h2>
           <button id="settingsClose" class="modal-close" aria-label="Close settings">✕</button>
         </div>
         <div class="modal-body">
-          <p>Burada WEB-OS ayarlarını ekleyebilirsiniz.</p>
+          <p>Here you can add YWEB-OS settings.</p>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Background</div>
+              <div class="background-options">
+                <button class="background-button" data-background="default">Default</button>
+                <button class="background-button" data-background="sunset">Sunset</button>
+                <button class="background-button" data-background="ocean">Ocean</button>
+                <button class="background-button" data-background="forest">Forest</button>
+              </div>
+            </div>
+            <div class="custom-background">
+              <label class="custom-background-label" for="customBackgroundInput">Upload Custom Background</label>
+              <input type="file" id="customBackgroundInput" accept="image/*">
+            </div>
+          </div>
           <div class="setting-row theme-selection">
             <div>
-              <div class="setting-label">Tema Seçimi</div>
+              <div class="setting-label">Theme Selection</div>
               <div class="theme-options">
-                <button class="theme-button" data-theme="default">Varsayılan</button>
+                <button class="theme-button" data-theme="default">Default</button>
                 <button class="theme-button" data-theme="cobalt">Cobalt</button>
                 <button class="theme-button" data-theme="sunset">Sunset</button>
                 <button class="theme-button" data-theme="forest">Forest</button>
