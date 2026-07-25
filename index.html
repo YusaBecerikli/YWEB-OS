@@ -13,12 +13,30 @@
       <div id="taskbarApps" aria-label="Open applications"></div>
     </div>
 
+    <button id="settingsButton" aria-label="Settings">⚙</button>
+
     <div id="startMenu" class="hidden">
       <div class="menu-header">Apps</div>
       <div id="appList"></div>
     </div>
 
     <div id="windowContainer"></div>
+
+    <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="settingsTitle">Ayarlar</h2>
+          <button id="settingsClose" class="modal-close" aria-label="Close settings">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>Burada WEB-OS ayarlarını ekleyebilirsiniz.</p>
+          <div class="setting-row">
+            <label for="themeToggle">Koyu / Açık Tema</label>
+            <button id="themeToggle" class="setting-button">Tema Değiştir</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>

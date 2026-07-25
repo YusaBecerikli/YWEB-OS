@@ -5,16 +5,37 @@ const startMenu = document.getElementById('startMenu');
 const appList = document.getElementById('appList');
 const windowContainer = document.getElementById('windowContainer');
 const taskbarApps = document.getElementById('taskbarApps');
+const settingsButton = document.getElementById('settingsButton');
+const settingsModal = document.getElementById('settingsModal');
+const settingsClose = document.getElementById('settingsClose');
+const themeToggle = document.getElementById('themeToggle');
 
 startButton.addEventListener('click', (event) => {
   event.stopPropagation();
   toggleStartMenu();
 });
 
+settingsButton.addEventListener('click', () => {
+  settingsModal.classList.remove('hidden');
+});
+
+settingsClose.addEventListener('click', () => {
+  settingsModal.classList.add('hidden');
+});
+
 document.addEventListener('click', (event) => {
   if (!startMenu.contains(event.target)) {
     hideStartMenu();
   }
+  if (!settingsModal.contains(event.target) && event.target !== settingsButton) {
+    if (!settingsModal.classList.contains('hidden')) {
+      settingsModal.classList.add('hidden');
+    }
+  }
+});
+
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark-theme');
 });
 
 function toggleStartMenu() {
