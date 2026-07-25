@@ -8,7 +8,9 @@ const taskbarApps = document.getElementById('taskbarApps');
 const settingsButton = document.getElementById('settingsButton');
 const settingsModal = document.getElementById('settingsModal');
 const settingsClose = document.getElementById('settingsClose');
-const themeToggle = document.getElementById('themeToggle');
+const themeButtons = document.querySelectorAll('.theme-button');
+
+document.body.classList.add('theme-default');
 
 startButton.addEventListener('click', (event) => {
   event.stopPropagation();
@@ -23,6 +25,13 @@ settingsClose.addEventListener('click', () => {
   settingsModal.classList.add('hidden');
 });
 
+themeButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
+    document.body.classList.add(`theme-${button.dataset.theme}`);
+  });
+});
+
 document.addEventListener('click', (event) => {
   if (!startMenu.contains(event.target)) {
     hideStartMenu();
@@ -32,10 +41,6 @@ document.addEventListener('click', (event) => {
       settingsModal.classList.add('hidden');
     }
   }
-});
-
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark-theme');
 });
 
 function toggleStartMenu() {
