@@ -68,7 +68,7 @@
             </div>
             <div class="console-status">Ready</div>
           </div>
-          <div class="console-output"></div>
+          <div class="console-output" tabindex="0"></div>
           <div class="console-input-row">
             <span class="console-prompt">guest@yweb:~$</span>
             <input class="console-input" type="text" autocomplete="off" spellcheck="false" />
@@ -78,10 +78,12 @@
 
       const output = container.querySelector('.console-output');
       const input = container.querySelector('.console-input');
+      const shell = container.querySelector('.console-app');
 
       function write(message, type = 'info') {
         const line = print(message, type);
         output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
       }
 
       write('YWEB Console initialized.');
@@ -124,13 +126,26 @@
       // Example:
       // registerCommand('greet', (args) => `Hello ${args.join(' ') || 'world'}`);
 
+      function refreshConsoleLayout() {
+        const shellRect = shell.getBoundingClientRect();
+        const headerHeight = container.querySelector('.console-header').offsetHeight;
+        const inputHeight = container.querySelector('.console-input-row').offsetHeight;
+        const availableHeight = Math.max(180, shellRect.height - headerHeight - inputHeight - 24);
+        output.style.minHeight = `${availableHeight}px`;
+        output.style.maxHeight = `${availableHeight}px`;
+      }
+
       input.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
           runCommand(input.value, output);
           input.value = '';
+          requestAnimationFrame(refreshConsoleLayout);
         }
       });
 
+      const resizeObserver = new ResizeObserver(() => refreshConsoleLayout());
+      resizeObserver.observe(shell);
+      requestAnimationFrame(refreshConsoleLayout);
       input.focus();
     }
 
