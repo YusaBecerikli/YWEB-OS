@@ -80,6 +80,11 @@
       const input = container.querySelector('.console-input');
       const shell = container.querySelector('.console-app');
 
+      container.style.height = '100%';
+      shell.style.height = '100%';
+      shell.style.minHeight = '320px';
+      shell.style.maxHeight = '460px';
+
       function write(message, type = 'info') {
         const line = print(message, type);
         output.appendChild(line);
@@ -130,7 +135,8 @@
         const shellRect = shell.getBoundingClientRect();
         const headerHeight = container.querySelector('.console-header').offsetHeight;
         const inputHeight = container.querySelector('.console-input-row').offsetHeight;
-        const availableHeight = Math.max(180, shellRect.height - headerHeight - inputHeight - 24);
+        const shellHeight = Math.max(320, shellRect.height || 320);
+        const availableHeight = Math.max(180, shellHeight - headerHeight - inputHeight - 24);
         output.style.minHeight = `${availableHeight}px`;
         output.style.maxHeight = `${availableHeight}px`;
       }

@@ -961,6 +961,9 @@ body::before {
 .window-content {
   padding: 0;
   background: linear-gradient(180deg, rgba(248,250,252,0.98), rgba(237,242,247,0.96));
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-shell {
@@ -1057,8 +1060,10 @@ body::before {
 .console-app {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   height: 100%;
-  min-height: 360px;
+  min-height: 320px;
+  max-height: 460px;
   padding: 12px;
   background: linear-gradient(145deg, #020617 0%, #0f172a 45%, #111827 100%);
   color: #f8fafc;
@@ -1092,6 +1097,7 @@ body::before {
 
 .console-output {
   flex: 1 1 auto;
+  min-height: 0;
   min-height: 140px;
   padding: 10px 12px;
   overflow: auto;
