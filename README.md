@@ -1,39 +1,39 @@
 # YWEB-OS
 
-Bu proje, temel bir Web tabanlı işletim sistemi (WEB-OS) deneyimi için başlangıç altyapısı içerir.
+This project contains a basic web-based operating system (WEB-OS) starter structure.
 
-## İçerikler
+## Contents
 
-- `index.html`: Ana arayüz ve masaüstü yapısı.
-- `style.css`: Temel stil ve pencere tasarımı.
-- `script.js`: Uygulama kayıt sistemi, ana menü ve pencere yönetimi.
+- `index.html`: Main interface and desktop structure.
+- `style.css`: Basic styling and window design.
+- `script.js`: App registration system, main menu, and window management.
 
-## Nasıl çalışır?
+## How it works
 
-1. `startButton` ile ana uygulama menüsünü açabilirsiniz.
-2. `script.js` içinde `registerApp(...)` çağrıları örnek uygulamalar ekler.
-3. `openApp(appId)` ile uygulama penceresi açılır ve pencere kapatma butonu ile kapatılabilir.
+1. You can open the main app menu with the `startButton`.
+2. Example apps are registered in `script.js` using `registerApp(...)` calls.
+3. `openApp(appId)` opens an app window, and it can be closed with the window close button.
 
-## Yeni uygulama ekleme
+## Adding a new app
 
-Yeni bir uygulama eklemek için `script.js` içinde `registerApp` fonksiyonunu kullanın:
+Use the `registerApp` function inside `script.js` to add a new app:
 
 ```js
 registerApp({
-  id: 'yeniUygulama',
-  name: 'Yeni Uygulama',
+  id: 'newApp',
+  name: 'New App',
   icon: '⭐',
   render(container) {
-    container.innerHTML = '<p>Yeni uygulama içeriği buraya gelir.</p>';
+    container.innerHTML = '<p>New app content goes here.</p>';
   }
 });
 ```
 
-- `id`: Uygulamanın benzersiz kimliğidir.
-- `name`: Menüde görünen isim.
-- `icon`: Menüde gösterilecek simge (emoji ya da kısa metin).
-- `render(container)`: Uygulama açıldığında çalışacak fonksiyon. `container` içine HTML içeriği ekleyebilirsiniz.
+- `id`: A unique identifier for the app.
+- `name`: The name shown in the menu.
+- `icon`: The icon shown in the menu (emoji or short text).
+- `render(container)`: A function that runs when the app opens. You can add HTML content inside `container`.
 
-## Çalıştırma
+## Running
 
-Bu dosyaları bir tarayıcıda `index.html` açarak çalıştırabilirsiniz.
+You can run these files by opening `index.html` in a browser.

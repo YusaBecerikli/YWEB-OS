@@ -8,13 +8,156 @@ const taskbarApps = document.getElementById('taskbarApps');
 const settingsButton = document.getElementById('settingsButton');
 const settingsModal = document.getElementById('settingsModal');
 const settingsClose = document.getElementById('settingsClose');
+const contextMenu = document.getElementById('contextMenu');
+const bootScreen = document.getElementById('bootScreen');
+const loginScreen = document.getElementById('loginScreen');
+const lockScreen = document.getElementById('lockScreen');
+const bootText = document.getElementById('bootText');
+const usernameInput = document.getElementById('usernameInput');
+const loginButton = document.getElementById('loginButton');
+const avatarPicker = document.getElementById('avatarPicker');
+const lockAvatar = document.getElementById('lockAvatar');
+const lockUsername = document.getElementById('lockUsername');
 const themeButtons = document.querySelectorAll('.theme-button');
 const backgroundButtons = document.querySelectorAll('.background-button');
 const customBackgroundInput = document.getElementById('customBackgroundInput');
 const desktopElement = document.getElementById('desktop');
+const storageKeys = {
+  theme: 'yweb-theme',
+  background: 'yweb-background',
+  username: 'yweb-username',
+  avatar: 'yweb-avatar'
+};
 
-document.body.classList.add('theme-default');
-desktopElement.style.background = getThemeBackground('default');
+let currentTheme = localStorage.getItem(storageKeys.theme) || 'default';
+let currentBackground = localStorage.getItem(storageKeys.background) || 'backgrounds/default1.jpg';
+let currentUser = localStorage.getItem(storageKeys.username) || '';
+let currentAvatar = localStorage.getItem(storageKeys.avatar) || 'U';
+
+applyTheme(currentTheme);
+applyBackground(currentBackground);
+
+const avatarOptions = ['U', 'A', 'B', 'C', 'D', 'E'];
+
+function renderAvatarPicker() {
+  avatarPicker.innerHTML = '';
+  avatarOptions.forEach((letter) => {
+    const button = document.createElement('button');
+    button.className = 'avatar-option';
+    button.textContent = letter;
+    button.addEventListener('click', () => {
+      currentAvatar = letter;
+      localStorage.setItem(storageKeys.avatar, letter);
+      updateAvatarDisplay();
+    });
+    avatarPicker.appendChild(button);
+  });
+}
+
+function updateAvatarDisplay() {
+  const displayLetter = currentAvatar || 'U';
+  lockAvatar.textContent = displayLetter;
+  document.body.dataset.avatar = displayLetter;
+}
+
+function showLoginScreen() {
+  bootScreen.classList.add('hidden');
+  loginScreen.classList.remove('hidden');
+  lockScreen.classList.add('hidden');
+  usernameInput.value = currentUser || '';
+  usernameInput.focus();
+}
+
+function showLockScreen() {
+  lockUsername.textContent = currentUser || 'User';
+  lockAvatar.textContent = currentAvatar || 'U';
+  lockScreen.classList.remove('hidden');
+  loginScreen.classList.add('hidden');
+  settingsButton.classList.add('hidden');
+}
+
+function startDesktop() {
+  loginScreen.classList.add('hidden');
+  lockScreen.classList.add('hidden');
+  desktopElement.classList.remove('locked');
+  settingsButton.classList.remove('hidden');
+  document.body.classList.add('desktop-ready');
+  updateAvatarDisplay();
+  if (currentUser) {
+    const welcome = document.createElement('div');
+    welcome.className = 'welcome-banner';
+    welcome.textContent = `Welcome back, ${currentUser}`;
+    desktopElement.appendChild(welcome);
+    setTimeout(() => welcome.remove(), 2500);
+  }
+}
+
+function saveUsername(username) {
+  const cleanName = username.trim();
+  if (!cleanName) return;
+  currentUser = cleanName;
+  localStorage.setItem(storageKeys.username, cleanName);
+  lockUsername.textContent = currentUser;
+}
+
+function signOut() {
+  localStorage.removeItem(storageKeys.username);
+  currentUser = '';
+  showLoginScreen();
+}
+
+window.addEventListener('load', () => {
+  renderAvatarPicker();
+  updateAvatarDisplay();
+
+  const bootStages = [
+    'Initializing system...',
+    'Loading services...',
+    'Preparing desktop...',
+    'Starting system...'
+  ];
+  let stageIndex = 0;
+  const stageTimer = setInterval(() => {
+    bootText.textContent = bootStages[stageIndex] || bootStages[bootStages.length - 1];
+    stageIndex += 1;
+    if (stageIndex >= bootStages.length) {
+      clearInterval(stageTimer);
+    }
+  }, 300);
+
+  setTimeout(() => {
+    bootScreen.classList.add('hidden');
+    if (currentUser) {
+      showLockScreen();
+    } else {
+      showLoginScreen();
+    }
+  }, 1600);
+});
+
+loginButton.addEventListener('click', () => {
+  saveUsername(usernameInput.value);
+  startDesktop();
+});
+
+usernameInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    saveUsername(usernameInput.value);
+    startDesktop();
+  }
+});
+
+lockScreen.addEventListener('click', () => {
+  startDesktop();
+});
+
+settingsButton.addEventListener('click', () => {
+  settingsModal.classList.remove('hidden');
+});
+
+settingsButton.addEventListener('dblclick', () => {
+  signOut();
+});
 
 startButton.addEventListener('click', (event) => {
   event.stopPropagation();
@@ -31,34 +174,46 @@ settingsClose.addEventListener('click', () => {
 
 themeButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
-    document.body.classList.add(`theme-${button.dataset.theme}`);
-    desktopElement.style.background = getThemeBackground(button.dataset.theme);
+    applyTheme(button.dataset.theme);
   });
 });
 
 backgroundButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
-    document.body.classList.add('theme-default');
-    const backgroundValue = button.dataset.background;
-    if (backgroundValue.startsWith('backgrounds/')) {
-      desktopElement.style.background = `url(${backgroundValue}) center/cover no-repeat`;
-    } else {
-      desktopElement.style.background = getBackgroundValue(backgroundValue);
-    }
+    applyBackground(button.dataset.background);
   });
 });
 
 customBackgroundInput.addEventListener('change', (event) => {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
-  const url = URL.createObjectURL(file);
-  desktopElement.style.background = `url(${url}) center/cover no-repeat`;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    applyBackground(reader.result);
+  };
+  reader.readAsDataURL(file);
 });
 
+function hideContextMenu() {
+  contextMenu.classList.add('hidden');
+  contextMenu.style.left = '-9999px';
+  contextMenu.style.top = '-9999px';
+}
+
+function shouldCloseContextMenu(target) {
+  if (contextMenu.classList.contains('hidden')) return false;
+  return target !== contextMenu && !contextMenu.contains(target);
+}
+
+document.addEventListener('pointerdown', (event) => {
+  if (!contextMenu.classList.contains('hidden') && shouldCloseContextMenu(event.target)) {
+    hideContextMenu();
+  }
+}, true);
+
 document.addEventListener('click', (event) => {
-  if (!startMenu.contains(event.target)) {
+  if (!startMenu.contains(event.target) && !startButton.contains(event.target)) {
     hideStartMenu();
   }
   if (!settingsModal.contains(event.target) && event.target !== settingsButton) {
@@ -66,14 +221,111 @@ document.addEventListener('click', (event) => {
       settingsModal.classList.add('hidden');
     }
   }
+  if (!contextMenu.classList.contains('hidden') && shouldCloseContextMenu(event.target)) {
+    hideContextMenu();
+  }
 });
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    hideContextMenu();
+    hideStartMenu();
+    if (!settingsModal.classList.contains('hidden')) {
+      settingsModal.classList.add('hidden');
+    }
+  }
+});
+
+desktopElement.addEventListener('click', (event) => {
+  if (!contextMenu.classList.contains('hidden') && shouldCloseContextMenu(event.target)) {
+    hideContextMenu();
+  }
+});
+
+desktopElement.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  const rect = desktopElement.getBoundingClientRect();
+  const x = Math.min(event.clientX - rect.left, rect.width - 180);
+  const y = Math.min(event.clientY - rect.top, rect.height - 120);
+
+  contextMenu.style.left = `${x}px`;
+  contextMenu.style.top = `${y}px`;
+  contextMenu.classList.remove('hidden');
+  contextMenu.style.zIndex = '260';
+});
+
+windowContainer.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+});
+
+contextMenu.addEventListener('mousedown', (event) => {
+  event.stopPropagation();
+});
+
+contextMenu.addEventListener('click', (event) => {
+  const button = event.target.closest('.context-menu-item');
+  if (!button) return;
+
+  const action = button.dataset.action;
+  if (action === 'settings') {
+    settingsModal.classList.remove('hidden');
+    hideContextMenu();
+  }
+  if (action === 'refresh') {
+    applyBackground(currentBackground);
+    hideContextMenu();
+  }
+  event.stopPropagation();
+});
+
+hideContextMenu();
+
 function toggleStartMenu() {
-  startMenu.classList.toggle('hidden');
+  if (startMenu.classList.contains('hidden')) {
+    startMenu.classList.remove('hidden');
+    startMenu.classList.add('show');
+  } else {
+    startMenu.classList.add('hidden');
+    startMenu.classList.remove('show');
+  }
 }
 
 function hideStartMenu() {
   startMenu.classList.add('hidden');
+  startMenu.classList.remove('show');
+}
+
+function applyTheme(theme) {
+  document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
+  document.body.classList.add(`theme-${theme}`);
+  currentTheme = theme;
+  localStorage.setItem(storageKeys.theme, theme);
+  updateSelectionState();
+}
+
+function applyBackground(backgroundValue) {
+  currentBackground = backgroundValue;
+  localStorage.setItem(storageKeys.background, backgroundValue);
+
+  if (backgroundValue.startsWith('backgrounds/') || backgroundValue.startsWith('data:')) {
+    desktopElement.style.background = `url(${backgroundValue}) center/cover no-repeat`;
+  } else {
+    desktopElement.style.background = getBackgroundValue(backgroundValue);
+  }
+
+  updateSelectionState();
+}
+
+function updateSelectionState() {
+  themeButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.theme === currentTheme);
+  });
+
+  backgroundButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.background === currentBackground);
+  });
 }
 
 function getThemeBackground(theme) {
@@ -147,6 +399,10 @@ function openApp(appId) {
   const windowElement = document.createElement('div');
   windowElement.className = 'window';
   windowElement.style.zIndex = 200;
+  windowElement.classList.add('window-opening');
+  requestAnimationFrame(() => {
+    windowElement.classList.add('window-open');
+  });
 
   const header = document.createElement('div');
   header.className = 'window-header';
@@ -237,6 +493,16 @@ function startResize(event, windowElement, direction) {
       newHeight = Math.max(minHeight, startHeight - dy);
       newTop = startTop + dy;
     }
+
+    const maxWidth = window.innerWidth - 20;
+    const maxHeight = window.innerHeight - 90;
+    newWidth = Math.min(newWidth, maxWidth);
+    newHeight = Math.min(newHeight, maxHeight);
+
+    const maxLeft = Math.max(10, window.innerWidth - newWidth - 10);
+    const maxTop = Math.max(10, window.innerHeight - newHeight - 90);
+    newLeft = Math.min(Math.max(10, newLeft), maxLeft);
+    newTop = Math.min(Math.max(10, newTop), maxTop);
 
     windowElement.style.width = `${newWidth}px`;
     windowElement.style.height = `${newHeight}px`;
@@ -349,7 +615,16 @@ registerApp({
   icon: '📝',
   render(container) {
     container.innerHTML = `
-      <textarea placeholder="Write your notes here..."></textarea>
+      <div class="app-shell notes-app">
+        <div class="app-toolbar">
+          <div>
+            <div class="app-toolbar-title">Quick Notes</div>
+            <div class="app-toolbar-subtitle">Capture ideas instantly</div>
+          </div>
+          <div class="app-toolbar-chip">Ready</div>
+        </div>
+        <textarea class="notes-textarea" placeholder="Write your notes here..."></textarea>
+      </div>
     `;
   }
 });
@@ -360,9 +635,19 @@ registerApp({
   icon: '🧮',
   render(container) {
     container.innerHTML = `
-      <div class="app-title">Simple Calculator</div>
-      <input type="text" class="calc-screen" id="calcScreen" value="0" readonly />
-      <div class="calc-grid"></div>
+      <div class="app-shell calculator-app">
+        <div class="app-toolbar">
+          <div>
+            <div class="app-toolbar-title">Calculator</div>
+            <div class="app-toolbar-subtitle">Fast arithmetic</div>
+          </div>
+          <div class="app-toolbar-chip">Simple</div>
+        </div>
+        <div class="calculator-card">
+          <input type="text" class="calc-screen" id="calcScreen" value="0" readonly />
+          <div class="calc-grid"></div>
+        </div>
+      </div>
     `;
 
     const screen = container.querySelector('#calcScreen');
@@ -411,119 +696,6 @@ registerApp({
 });
 
 
-
-registerApp({
-  id: 'RealWebEngine',
-  name: 'RealWebEngine',
-  icon: '⭐',
-  render(container) {
-    container.innerHTML = `
-      <div class="searchBox">
-        <input class="searchInput" type="text" placeholder="Search RealWebEngine" aria-label="Search query" />
-        <button class="searchButton" type="button" aria-label="Search">🔎</button>
-      </div>
-      <div class="search-results"></div>
-      <div class="search-preview hidden">
-        <div class="preview-header">
-          <span class="preview-title">Sonuç Önizlemesi</span>
-          <button class="preview-close" type="button" aria-label="Close preview">Kapat</button>
-        </div>
-        <div class="preview-body"></div>
-      </div>
-    `;
-
-    const input = container.querySelector('.searchInput');
-    const button = container.querySelector('.searchButton');
-    const results = container.querySelector('.search-results');
-    const preview = container.querySelector('.search-preview');
-    const previewBody = container.querySelector('.preview-body');
-    const previewClose = container.querySelector('.preview-close');
-
-    const resultTemplates = [
-      {
-        title: 'DuckDuckGo',
-        description: 'Aradığınız bilgilere gizlilik dostu bir şekilde yaklaşır.',
-        domain: 'duckduckgo.com'
-      },
-      {
-        title: 'Wikipedia',
-        description: 'Popüler bilgi ve hızlı özetler için simüle edilmiş sonuç.',
-        domain: 'wikipedia.org'
-      },
-      {
-        title: 'StackOverflow',
-        description: 'Geliştirici soruları ve kod çözümleri için öneri.',
-        domain: 'stackoverflow.com'
-      },
-      {
-        title: 'Medium',
-        description: 'Konu başlıkları ve makale önerileri sunar.',
-        domain: 'medium.com'
-      },
-      {
-        title: 'Developer Blog',
-        description: 'Teknik anlatımlar ve örnek kod parçacıkları.',
-        domain: 'dev.example'
-      }
-    ];
-
-    function createResultCard(query, index) {
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'search-result-card';
-      const result = resultTemplates[index % resultTemplates.length];
-      const fakeUrl = `https://${result.domain}/search?q=${encodeURIComponent(query)}`;
-
-      card.innerHTML = `
-        <div class="search-result-title">${result.title} — ${query}</div>
-        <div class="search-result-description">${result.description}</div>
-        <div class="search-result-url">${fakeUrl}</div>
-      `;
-      card.addEventListener('click', () => {
-        previewBody.innerHTML = `
-          <p><strong>Aranan:</strong> ${query}</p>
-          <p><strong>Site:</strong> ${result.domain}</p>
-          <p><strong>Özet:</strong> "${query}" hakkında aramalarınız için uygun bazı bölümler bulundu.</p>
-          <div class="preview-fake-content">
-            <p><strong>Önerilen başlık:</strong> ${query} ile ilgili temel bilgiler ve örnekler.</p>
-            <p>İlgili sonuç, aradığınız konuya yönelik kısa bir özet sunar.</p>
-          </div>
-        `;
-        preview.classList.remove('hidden');
-      });
-      return card;
-    }
-
-    function renderResults(query) {
-      results.innerHTML = '';
-      for (let i = 0; i < 5; i += 1) {
-        results.appendChild(createResultCard(query, i));
-      }
-      preview.classList.add('hidden');
-    }
-
-    function handleSearch() {
-      const query = input.value.trim();
-      if (!query) {
-        results.innerHTML = '<div class="search-warning">Lütfen arama kelimesi girin.</div>';
-        preview.classList.add('hidden');
-        return;
-      }
-      renderResults(query);
-    }
-
-    previewClose.addEventListener('click', () => {
-      preview.classList.add('hidden');
-    });
-
-    button.addEventListener('click', handleSearch);
-    input.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        handleSearch();
-      }
-    });
-  }
-});
 
 // Yeni uygulama eklemek için bu örneği kullanabilirsiniz:
 // registerApp({

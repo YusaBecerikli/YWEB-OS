@@ -8,12 +8,43 @@
 </head>
 <body>
   <div id="desktop">
-    <div id="taskbar">
+    <div id="bootScreen" class="boot-screen">
+      <div class="boot-logo">YWEB OS</div>
+      <div class="boot-progress">
+        <div class="boot-progress-bar"></div>
+      </div>
+      <div id="bootText" class="boot-text">Initializing system...</div>
+    </div>
+
+    <div id="loginScreen" class="login-screen hidden">
+      <div class="login-card">
+        <div class="login-title">Welcome</div>
+        <div class="login-subtitle">Choose a username to continue</div>
+        <div class="avatar-picker" id="avatarPicker"></div>
+        <input id="usernameInput" class="login-input" type="text" maxlength="24" placeholder="Username" />
+        <button id="loginButton" class="login-button">Enter</button>
+      </div>
+    </div>
+
+    <div id="lockScreen" class="lock-screen hidden">
+      <div class="lock-card">
+        <div class="lock-avatar" id="lockAvatar">U</div>
+        <div class="lock-username" id="lockUsername">User</div>
+        <div class="lock-hint">Click anywhere to unlock</div>
+      </div>
+    </div>
+
+    <div id="taskbar" class="dock-taskbar">
       <button id="startButton">Start</button>
       <div id="taskbarApps" aria-label="Open applications"></div>
     </div>
 
     <button id="settingsButton" aria-label="Settings">⚙</button>
+
+    <div id="contextMenu" class="context-menu hidden" role="menu">
+      <button class="context-menu-item" data-action="settings">Open Settings</button>
+      <button class="context-menu-item" data-action="refresh">Refresh Desktop</button>
+    </div>
 
     <div id="startMenu" class="hidden">
       <div class="menu-header">Apps</div>
@@ -62,5 +93,6 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="console-app.js"></script>
 </body>
 </html>

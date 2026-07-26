@@ -32,20 +32,181 @@ body {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+}
+
+#desktop.locked {
+  pointer-events: none;
+}
+
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+  color: white;
+}
+
+.lock-card {
+  text-align: center;
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+}
+
+.lock-avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.lock-username {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.lock-hint {
+  margin-top: 10px;
+  color: rgba(255,255,255,0.72);
+}
+
+.boot-screen,
+.login-screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 400;
+  background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+  color: white;
+}
+
+.boot-logo,
+.login-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.boot-progress {
+  width: 220px;
+  height: 8px;
+  margin-top: 20px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  overflow: hidden;
+}
+
+.boot-progress-bar {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7dd3fc, #818cf8);
+  animation: bootProgress 1.2s ease forwards;
+}
+
+.boot-text,
+.login-subtitle {
+  margin-top: 12px;
+  color: rgba(255,255,255,0.8);
+  min-height: 1.4em;
+}
+
+.login-card {
+  width: min(360px, calc(100% - 32px));
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  backdrop-filter: blur(20px);
+  text-align: center;
+}
+
+.avatar-picker {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.avatar-option {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  cursor: pointer;
+}
+
+.login-input {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.login-button {
+  margin-top: 14px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  cursor: pointer;
+}
+
+.welcome-banner {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  color: white;
+  z-index: 320;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.24);
+  animation: fadeInOut 2.5s ease forwards;
 }
 
 #taskbar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 8px 12px;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: var(--taskbar);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
   z-index: 100;
+  backdrop-filter: blur(22px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+#startButton {
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
 }
 
 #startButton {
@@ -62,6 +223,24 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.taskbar-icon {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #eef2f9;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.12);
+}
+
+.taskbar-icon.active {
+  background: linear-gradient(135deg, #5c7ace, #7c93e8);
+  transform: translateY(-3px);
 }
 
 #settingsButton {
@@ -107,6 +286,12 @@ body {
 .theme-button:hover {
   transform: translateY(-1px);
   background: rgba(79, 97, 150, 0.96);
+}
+
+.background-button.active,
+.theme-button.active {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
 }
 
 .background-button[data-background="sunset"] {
@@ -310,18 +495,27 @@ body.theme-default {
 
 #startMenu {
   position: fixed;
-  bottom: 62px;
-  left: 12px;
-  width: 240px;
+  bottom: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(320px, calc(100% - 24px));
   max-height: 60vh;
   overflow-y: auto;
   background: rgba(18, 27, 41, 0.98);
   border: 1px solid rgba(118, 145, 255, 0.12);
-  border-radius: 16px;
+  border-radius: 22px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-  padding: 12px;
-  backdrop-filter: blur(10px);
-  z-index: 110;
+  padding: 14px;
+  backdrop-filter: blur(12px);
+  z-index: 180;
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#startMenu.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .hidden {
@@ -374,6 +568,14 @@ body.theme-default {
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.window.window-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .window.fullscreen {
@@ -475,23 +677,23 @@ body.theme-default {
 }
 
 .window-resizer-ne {
-  right: -5px;
-  top: -5px;
+  right: 6px;
+  top: 6px;
 }
 
 .window-resizer-se {
-  right: -5px;
-  bottom: -5px;
+  right: 6px;
+  bottom: 6px;
 }
 
 .window-resizer-nw {
-  left: -5px;
-  top: -5px;
+  left: 6px;
+  top: 6px;
 }
 
 .window-resizer-sw {
-  left: -5px;
-  bottom: -5px;
+  left: 6px;
+  bottom: 6px;
 }
 
 .window-title {
@@ -556,197 +758,379 @@ textarea {
   color: white;
 }
 
-.taskbar-icon {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #eef2f9;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-
-.taskbar-icon.active {
-  background: #5c7ace;
-}
-
-
-/* From Uiverse.io by OnlyCodeChannel */ 
-.searchBox {
+.context-menu {
+  position: fixed;
+  z-index: 260;
   display: flex;
-  max-width: 230px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  background: #2f3640;
-  border-radius: 50px;
-  position: relative;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 16px 44px rgba(0,0,0,0.24);
+  backdrop-filter: blur(16px);
 }
 
-.searchButton {
-  color: white;
-  position: absolute;
-  right: 8px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--gradient-2, linear-gradient(90deg, #2AF598 0%, #009EFD 100%));
-  border: 0;
-  display: inline-block;
-  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
-}
-/*hover effect*/
-.searchButton:hover {
-  color: #fff;
-  background-color: #1A1A1A;
-  box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
-  transform: translateY(-3px);
-}
-/*button pressing effect*/
-.searchButton:active {
-  box-shadow: none;
-  transform: translateY(0);
+.context-menu.hidden {
+  left: -9999px !important;
+  top: -9999px !important;
 }
 
-.searchInput {
+.context-menu-item {
   border: none;
-  background: none;
-  outline: none;
-  color: white;
-  font-size: 15px;
-  padding: 24px 46px 24px 26px;
-  width: 100%;
-}
-
-.search-results {
-  margin-top: 20px;
-  display: grid;
-  gap: 14px;
-}
-
-.search-result-heading {
-  color: #cbd5e1;
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-.search-result-card {
-  background: rgba(10, 16, 26, 0.92);
-  border: 1px solid rgba(110, 175, 255, 0.12);
-  color: #eef2f9;
-  border-radius: 16px;
-  padding: 16px;
+  background: transparent;
+  color: #f8fafc;
   text-align: left;
+  padding: 8px 10px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
-.search-result-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(110, 175, 255, 0.24);
-  background: rgba(20, 30, 48, 0.95);
+.context-menu-item:hover {
+  background: rgba(255,255,255,0.1);
 }
 
-.search-result-card a {
-  color: inherit;
-  text-decoration: none;
-  display: block;
+.webview-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 360px;
+  margin: -16px;
+  background: #0f172a;
 }
 
-.search-result-title {
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 8px;
+.webview-toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: #111827;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.search-result-description {
+.webview-address {
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.webview-go,
+.webview-open {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: white;
+  cursor: pointer;
+}
+
+.webview-go {
+  background: #2563eb;
+}
+
+.webview-open {
+  background: #0f766e;
+}
+
+.webview-status {
+  padding: 8px 12px;
+  font-size: 0.9rem;
   color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.webview-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 320px;
+  border: none;
+  background: white;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.16), transparent 32%);
+  pointer-events: none;
+}
+
+@keyframes bootProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+#desktop {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+}
+
+#taskbar {
+  backdrop-filter: blur(18px);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16);
+}
+
+#startButton,
+#settingsButton,
+.background-button,
+.theme-button,
+.window-fullscreen,
+.window-close,
+.taskbar-icon,
+.calc-button,
+.console-status,
+.app-toolbar-chip {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+#startButton:hover,
+#settingsButton:hover,
+.background-button:hover,
+.theme-button:hover,
+.window-fullscreen:hover,
+.window-close:hover,
+.taskbar-icon:hover,
+.calc-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+}
+
+#startMenu {
+  width: 280px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(22px);
+}
+
+.menu-header {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   margin-bottom: 10px;
 }
 
-.search-result-url {
-  color: #7dd3fc;
-  font-size: 13px;
-  word-break: break-all;
+.app-item {
+  margin-bottom: 8px;
+  padding: 12px;
+  border: 1px solid transparent;
 }
 
-.search-warning {
-  color: #f8c04d;
-  font-size: 14px;
+.app-item:hover {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.12);
 }
 
-.search-summary {
-  margin-top: 16px;
-  color: #d6d6d6;
-  font-size: 14px;
-  line-height: 1.5;
-  padding: 10px 14px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+.modal-panel {
+  border: 1px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(22px);
 }
 
-.search-result-card {
-  background: rgba(12, 18, 30, 0.98);
-  border: 2px dashed rgba(255, 255, 255, 0.12);
-  color: #f8fafc;
-  border-radius: 18px;
+.setting-row {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.setting-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin-bottom: 6px;
+}
+
+.window {
+  border: 1px solid rgba(255,255,255,0.38);
+  backdrop-filter: blur(16px);
+}
+
+.window-header {
+  background: linear-gradient(135deg, #4f69a6 0%, #31456b 100%);
+  padding: 12px 14px;
+}
+
+.window-content {
+  padding: 0;
+  background: linear-gradient(180deg, rgba(248,250,252,0.98), rgba(237,242,247,0.96));
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 16px;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  min-height: 100%;
 }
 
-.search-result-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(129, 140, 248, 0.5);
-  background: rgba(20, 28, 44, 0.98);
-}
-
-.search-preview {
-  margin-top: 22px;
-  padding: 16px;
-  border: 2px dashed rgba(255, 255, 255, 0.16);
-  border-radius: 18px;
-  background: rgba(8, 12, 20, 0.95);
-}
-
-.search-preview.hidden {
-  display: none;
-}
-
-.preview-header {
+.app-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 14px;
 }
 
-.preview-title {
-  color: #e2e8f0;
+.app-toolbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.app-toolbar-subtitle {
+  font-size: 0.82rem;
+  color: rgba(15, 23, 42, 0.66);
+}
+
+.app-toolbar-chip,
+.console-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(79, 105, 166, 0.16);
+  color: #31456b;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
-.preview-close {
+.notes-textarea {
+  width: 100%;
+  min-height: 260px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  resize: vertical;
+  background: rgba(255,255,255,0.95);
+  color: #0f172a;
+  box-shadow: inset 0 1px 2px rgba(15,23,42,0.08);
+}
+
+.calculator-card {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.calc-screen {
+  height: 58px;
   border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: #eef2f9;
-  padding: 8px 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #111827, #243447);
+  color: white;
+  font-size: 1.35rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.24);
+}
+
+.calc-grid {
+  gap: 12px;
+}
+
+.calc-button {
+  padding: 14px 0;
+  border-radius: 14px;
+  background: white;
+  color: #111827;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(15,23,42,0.08);
+}
+
+.calc-button.operator {
+  background: linear-gradient(135deg, #3b4d72, #51689d);
+  color: white;
+}
+
+.console-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 360px;
+  padding: 14px;
+  background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+  color: #f8fafc;
+}
+
+.console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
   border-radius: 12px;
-  cursor: pointer;
+  background: rgba(255,255,255,0.06);
+  margin-bottom: 10px;
 }
 
-.preview-body {
-  color: #cbd5e1;
+.console-title {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.preview-fake-content {
-  margin-top: 12px;
+.console-subtitle {
+  font-size: 0.8rem;
+  color: rgba(226,232,240,0.72);
+}
+
+.console-output {
+  flex: 1;
   padding: 12px;
-  background: rgba(15, 20, 33, 0.85);
+  overflow: auto;
+  border-radius: 14px;
+  background: rgba(2,6,23,0.72);
+  font-family: Consolas, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.console-line {
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.console-line.success {
+  color: #86efac;
+}
+
+.console-line.error {
+  color: #fda4af;
+}
+
+.console-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(109, 123, 245, 0.14);
+  background: rgba(255,255,255,0.08);
+}
+
+.console-prompt {
+  color: #7dd3fc;
+  font-weight: 700;
+}
+
+.console-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-family: Consolas, monospace;
+  font-size: 0.95rem;
 }
 
