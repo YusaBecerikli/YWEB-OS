@@ -1,3 +1,6 @@
+// ================================
+// Core desktop state
+// ================================
 const appRegistry = [];
 const openWindows = {};
 const startButton = document.getElementById('startButton');
@@ -34,11 +37,17 @@ let currentBackground = localStorage.getItem(storageKeys.background) || 'backgro
 let currentUser = localStorage.getItem(storageKeys.username) || '';
 let currentAvatar = localStorage.getItem(storageKeys.avatar) || 'U';
 
+// ================================
+// Initial theme and background
+// ================================
 applyTheme(currentTheme);
 applyBackground(currentBackground);
 
 const avatarOptions = ['U', 'A', 'B', 'C', 'D', 'E'];
 
+// ================================
+// Boot, login, and desktop flow
+// ================================
 function renderAvatarPicker() {
   avatarPicker.innerHTML = '';
   avatarOptions.forEach((letter) => {
@@ -164,10 +173,6 @@ startButton.addEventListener('click', (event) => {
   toggleStartMenu();
 });
 
-settingsButton.addEventListener('click', () => {
-  settingsModal.classList.remove('hidden');
-});
-
 settingsClose.addEventListener('click', () => {
   settingsModal.classList.add('hidden');
 });
@@ -282,6 +287,9 @@ contextMenu.addEventListener('click', (event) => {
 
 hideContextMenu();
 
+// ================================
+// Desktop interactions: start menu, settings, context menu
+// ================================
 function toggleStartMenu() {
   if (startMenu.classList.contains('hidden')) {
     startMenu.classList.remove('hidden');
@@ -297,6 +305,9 @@ function hideStartMenu() {
   startMenu.classList.remove('show');
 }
 
+// ================================
+// Theme and background handling
+// ================================
 function applyTheme(theme) {
   document.body.classList.remove('theme-default', 'theme-cobalt', 'theme-sunset', 'theme-forest');
   document.body.classList.add(`theme-${theme}`);
@@ -357,6 +368,9 @@ function getBackgroundValue(name) {
   }
 }
 
+// ================================
+// App system and window manager
+// ================================
 function registerApp(app) {
   if (!app.id || !app.name || typeof app.render !== 'function') {
     console.warn('Invalid app registration:', app);
@@ -608,7 +622,9 @@ function createTaskbarButton(app) {
   return button;
 }
 
-// Temel uygulama örnekleri
+// ================================
+// Built-in apps
+// ================================
 registerApp({
   id: 'notlar',
   name: 'Notes',

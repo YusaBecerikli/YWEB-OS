@@ -1,4 +1,7 @@
 (function () {
+  // ================================
+  // Console app module
+  // ================================
   function createConsoleShell() {
     const commands = {};
     const outputLines = [];
@@ -6,6 +9,9 @@
       counter: 0
     };
 
+    // ================================
+    // Command registry
+    // ================================
     function registerCommand(name, handler) {
       commands[name.toLowerCase()] = handler;
     }
@@ -58,6 +64,9 @@
       outputElement.scrollTop = outputElement.scrollHeight;
     }
 
+    // ================================
+    // Console UI and shell rendering
+    // ================================
     function render(container) {
       container.innerHTML = `
         <div class="console-app">
@@ -149,6 +158,7 @@
         }
       });
 
+      // Keep the console output pane bounded so it scrolls instead of growing forever.
       const resizeObserver = new ResizeObserver(() => refreshConsoleLayout());
       resizeObserver.observe(shell);
       requestAnimationFrame(refreshConsoleLayout);
@@ -163,6 +173,10 @@
   }
 
   const consoleShell = createConsoleShell();
+
+  // ================================
+  // Register the console as a desktop app
+  // ================================
 
   window.YWEBConsole = {
     createConsoleShell,
