@@ -380,6 +380,7 @@ function registerApp(app) {
   renderAppList();
 }
 
+
 function renderAppList() {
   appList.innerHTML = '';
 
@@ -630,20 +631,48 @@ registerApp({
   name: 'Notes',
   icon: '📝',
   render(container) {
+    // GÜVENLİK KİLİDİ: Eğer sistem container'ı null gönderirse kodu durdur, çökme!
+    if (!container) {
+      console.warn("Notes is open but system cannot find any container");
+      return;
+    }
+
+    // 1. Adım: Arayüzü oluşturuyoruz
     container.innerHTML = `
-      <div class="app-shell notes-app">
-        <div class="app-toolbar">
-          <div>
-            <div class="app-toolbar-title">Quick Notes</div>
-            <div class="app-toolbar-subtitle">Capture ideas instantly</div>
-          </div>
-          <div class="app-toolbar-chip">Ready</div>
-        </div>
-        <textarea class="notes-textarea" placeholder="Write your notes here..."></textarea>
+      <div class="app-shell notes-app flex flex-col gap-3 p-4">
+        <textarea id="dinamikMetin" class="textarea textarea-bordered h-40 w-full" placeholder="Write your notes here..."></textarea>
+        <button id="saveNote" class="btn btn-primary btn-sm md:btn-md w-full sm:w-auto">Save it!</button>
       </div>
     `;
+
+    // 2. Adım: Elemanlar yüklendi, butonu güvenle seçiyoruz
+    const saveBtn = container.querySelector('#saveNote');
+    
+    // Buton hafızada var mı kontrolü (Aşırı güvenlik)
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        const metinElemani = container.querySelector('#dinamikMetin');
+        if (!metinElemani) return;
+        
+        const metin = metinElemani.value;
+        
+        // 3. Adım: Metni TXT dosyası formatına (Blob) dönüştürün
+        const blob = new Blob([metin], { type: 'text/plain;charset=utf-8' });
+        
+        // 4. Adım: Geçici bir indirme linki oluşturun
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Note.txt';
+        
+        // 5. Adım: Tetikleyin ve temizleyin
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+    }
   }
 });
+
+
 
 registerApp({
   id: 'hesap',
@@ -652,13 +681,6 @@ registerApp({
   render(container) {
     container.innerHTML = `
       <div class="app-shell calculator-app">
-        <div class="app-toolbar">
-          <div>
-            <div class="app-toolbar-title">Calculator</div>
-            <div class="app-toolbar-subtitle">Fast arithmetic</div>
-          </div>
-          <div class="app-toolbar-chip">Simple</div>
-        </div>
         <div class="calculator-card">
           <input type="text" class="calc-screen" id="calcScreen" value="0" readonly />
           <div class="calc-grid"></div>
@@ -710,6 +732,16 @@ registerApp({
     });
   }
 });
+
+function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
+            setTimeout(updateClock, 1000);
+        }
+        updateClock();
 
 
 

@@ -70,13 +70,6 @@
     function render(container) {
       container.innerHTML = `
         <div class="console-app">
-          <div class="console-header">
-            <div>
-              <div class="console-title">Developer Console</div>
-              <div class="console-subtitle">Type commands and extend them freely</div>
-            </div>
-            <div class="console-status">Ready</div>
-          </div>
           <div class="console-output" tabindex="0"></div>
           <div class="console-input-row">
             <span class="console-prompt">guest@yweb:~$</span>
@@ -89,10 +82,11 @@
       const input = container.querySelector('.console-input');
       const shell = container.querySelector('.console-app');
 
-      container.style.height = '100%';
-      shell.style.height = '100%';
-      shell.style.minHeight = '320px';
-      shell.style.maxHeight = '460px';
+      container.style.height = '90%';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      shell.style.height = '90%';
+      shell.style.minHeight = '0';
 
       function write(message, type = 'info') {
         const line = print(message, type);
@@ -142,10 +136,9 @@
 
       function refreshConsoleLayout() {
         const shellRect = shell.getBoundingClientRect();
-        const headerHeight = container.querySelector('.console-header').offsetHeight;
         const inputHeight = container.querySelector('.console-input-row').offsetHeight;
-        const shellHeight = Math.max(320, shellRect.height || 320);
-        const availableHeight = Math.max(180, shellHeight - headerHeight - inputHeight - 24);
+        const shellHeight = Math.max(220, shellRect.height || 220);
+        const availableHeight = Math.max(140, shellHeight - inputHeight - 24);
         output.style.minHeight = `${availableHeight}px`;
         output.style.maxHeight = `${availableHeight}px`;
       }

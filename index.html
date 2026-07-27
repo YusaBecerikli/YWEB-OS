@@ -4,8 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YWEB-OS</title>
+  
+  <!-- DaisyUI CSS -->
+  <link href="https://cloudflare.com" rel="stylesheet" type="text/css" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://unpkg.com"></script>
+  
   <link rel="stylesheet" href="style.css?v=20260726-1">
 </head>
+
 <body>
   <div id="desktop">
     <div id="bootScreen" class="boot-screen">
@@ -37,6 +45,7 @@
     <div id="taskbar" class="dock-taskbar">
       <button id="startButton">Start</button>
       <div id="taskbarApps" aria-label="Open applications"></div>
+      <h3 style="color:white" id ="clock">00.00</h3>
     </div>
 
     <button id="settingsButton" aria-label="Settings">⚙</button>
